@@ -7,20 +7,18 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useGetMovies } from "./hooks/index.hook";
-import { MovieCard } from "../components";
+import { EmptyCard, MovieCard } from "../components";
 
 type Props = {};
 
 const Search = (props: Props) => {
   const [query, setQuery] = useState<string>("");
 
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
 
-  const { data, isLoading, search, loading } = useGetMovies();
+  const [useSearchResult, setUseSearchResult] = useState(true);
 
-  //   const optimizedSearch = useMemo(() => {
-  //     return debounce(setQuery, 500);
-  //   }, []);
+  const { data, isLoading, movies, search, loading } = useGetMovies();
 
   return (
     <Box className="container h-full">
@@ -49,6 +47,7 @@ const Search = (props: Props) => {
           sx={{ textTransform: "none" }}
           onClick={() => {
             if (!query.trim()) return;
+            setUseSearchResult(false);
             search({
               q: query,
               page,
@@ -62,17 +61,28 @@ const Search = (props: Props) => {
           Search
         </Button>
       </Box>
-      <Box className="mt-[30px]">
+      <Box className="mt-[30px] w-full mx-auto my-auto">
         <Box className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-3">
-          {isLoading &&
-            !data?.Search?.length &&
+          {(isLoading || loading) &&
             ["*", "*", "*", "*", "*", "*", "*", "*", "*", "*"].map((it) => (
-              <Skeleton height="250px"></Skeleton>
+              <Skeleton height="300px" color="primary"></Skeleton>
             ))}
-          {data?.Search?.map((movie, index) => (
-            <MovieCard key={movie?.imdbID} movie={movie} />
-          ))}
+          {(!isLoading || !loading) &&
+            data?.Search?.length &&
+            useSearchResult &&
+            data?.Search?.map((movie, index) => (
+              <MovieCard key={movie?.imdbID} movie={movie} />
+            ))}
+          {(!isLoading || !loading) &&
+            movies?.Search?.length &&
+            !useSearchResult &&
+            movies?.Search?.map((movie, index) => (
+              <MovieCard key={movie?.imdbID} movie={movie} />
+            ))}
         </Box>
+        {(!loading || !isLoading) &&
+          !data?.Search?.length &&
+          (!loading || !isLoading) && <EmptyCard />}
       </Box>
     </Box>
   );

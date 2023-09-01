@@ -15,13 +15,14 @@ export const EmptyStateCard: FC<Props> = ({
       position="relative"
       sx={{
         background: "#F7F7F8",
-        width: "100%",
+        width: "60%",
         height: "350px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
         gap: 2,
+        margin: "auto",
       }}
     >
       <svg
