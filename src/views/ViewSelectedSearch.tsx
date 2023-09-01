@@ -1,9 +1,15 @@
 import React from "react";
+import { useParams } from "react-router-dom";
+import { useGetMovie } from "./hooks/index.hook";
+import { CircularProgress } from "@mui/material";
 
-type Props = {};
+const ViewSelectedMovie = () => {
+  const { id } = useParams();
+  const { data, isLoading } = useGetMovie(id || "");
 
-const ViewSelectedSearch = (props: Props) => {
-  return <div>ViewSelectedSearch</div>;
+  if (isLoading) return <CircularProgress />;
+
+  return <div>ViewSelectedMovie</div>;
 };
 
-export default ViewSelectedSearch;
+export default ViewSelectedMovie;
