@@ -7,8 +7,8 @@ import {
   TextField,
   colors,
 } from "@mui/material";
-import { useMemo, useState } from "react";
-import { useGetMovies } from "./hooks/index.hook";
+import { useEffect, useMemo, useState } from "react";
+import { useGetMovies, useGetRecentSearches } from "./hooks/index.hook";
 import { EmptyCard, MovieCard } from "../components";
 
 type Props = {};
@@ -24,9 +24,13 @@ const Search = (props: Props) => {
 
   const { data, isLoading, movies, search, loading } = useGetMovies();
 
+  const { data: recentQueries } = useGetRecentSearches();
+
   const [searches, setSearches] = useState<string[]>([]);
 
-  console.log(searches);
+  useEffect(() => {
+    setSearches(recentQueries.map((it: any) => it?.query));
+  }, [recentQueries]);
 
   const recentSearches = useMemo(() => {
     const data = searches;
@@ -39,8 +43,6 @@ const Search = (props: Props) => {
 
     return data;
   }, [query, searches]);
-
-  console.log(recentSearches, "recent");
 
   return (
     <Box className="container h-full">

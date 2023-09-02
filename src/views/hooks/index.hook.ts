@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ISupportedSearchOption,
   MovieDetails,
@@ -11,18 +11,20 @@ export const useGetMovies = (searchOptions?: ISupportedSearchOption) => {
   const [movies, setMovies] = useState<SearchResultOfMovieResponse>(
     new SearchResultOfMovieResponse()
   );
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const { isLoading, data } = useQuery<SearchResultOfMovieResponse>({
     queryKey: ["movies"],
     queryFn: async () => {
       setLoading(true);
       const res = await axiosInstance.get<SearchResultOfMovieResponse>(
-        `/?q=2023`
+        `movies/find?q=2023`
       );
       setLoading(false);
       return res.data;
     },
     onSuccess(data) {
+      queryClient.invalidateQueries(["searches"]);
       if (data.Response === "False") {
         setMovies(new SearchResultOfMovieResponse());
       } else {
@@ -36,7 +38,7 @@ export const useGetMovies = (searchOptions?: ISupportedSearchOption) => {
   ): Promise<void> => {
     setLoading(true);
     const res = await axiosInstance.get<SearchResultOfMovieResponse>(
-      `/?q=${searchOptions?.q}`
+      `movies/find?q=${searchOptions?.q}`
     );
     if (res.data.Response === "False") {
       setMovies(new SearchResultOfMovieResponse());
@@ -52,7 +54,19 @@ export const useGetMovie = (id: string) => {
     queryKey: ["movies-single", id],
     enabled: !!id,
     queryFn: async () => {
-      const res = await axiosInstance.get<MovieDetails>(`/${id}`);
+      const res = await axiosInstance.get<MovieDetails>(`movies/${id}`);
+
+      return res.data;
+    },
+  });
+
+  return { isLoading, data };
+};
+export const useGetRecentSearches = () => {
+  const { isLoading, data = [] } = useQuery<any>({
+    queryKey: ["searches"],
+    queryFn: async () => {
+      const res = await axiosInstance.get<any>(`searches`);
 
       return res.data;
     },
