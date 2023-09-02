@@ -1,9 +1,16 @@
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useGetMovie } from "./hooks/index.hook";
 import { Button, CircularProgress, Rating } from "@mui/material";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { CardLabel } from "../components";
+import { CardLabel, MovieCard } from "../components";
+import { axiosInstance } from "../utils/request";
+import {
+  MovieResponse,
+  SearchResultOfMovieResponse,
+} from "./types/index.types";
+import { Carousel } from "react-responsive-carousel";
 
 const ViewSelectedMovie = () => {
   const { id } = useParams();
@@ -11,10 +18,10 @@ const ViewSelectedMovie = () => {
 
   const navigate = useNavigate();
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading) return <CircularProgress color="secondary" />;
 
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col gap-2">
       <div className="mb-3">
         <Button startIcon={<FaArrowLeftLong />} onClick={() => navigate(-1)}>
           Go back
@@ -25,7 +32,7 @@ const ViewSelectedMovie = () => {
           <img
             src={`${data?.Poster}`}
             alt=""
-            className="object-cover w-full h-full"
+            className="object-cover w-[100%]"
           />
         </div>
         <div className="grid-cols-2">
@@ -57,8 +64,35 @@ const ViewSelectedMovie = () => {
           <CardLabel content={data?.imdbVotes || ""} title="Votes" />
         </div>
       </div>
+      <div className="h-[300px] w-full mt-8">
+        <div className="text-white text-[24px] mb-2">Similar movies</div>
+        <SimilarMovies />
+      </div>
     </div>
   );
 };
 
 export default ViewSelectedMovie;
+
+const SimilarMovies = () => {
+  const [searchParams] = useSearchParams();
+  const { id } = useParams();
+  const [data, setData] = useState<MovieResponse[]>([]);
+  useEffect(() => {
+    (async () => {
+      const res = await axiosInstance.get<SearchResultOfMovieResponse>(
+        `/?q=${searchParams.get("year")}`
+      );
+      if (res.data.Response === "True") {
+        setData(res.data.Search.filter((it) => it.imdbID !== id));
+      }
+    })();
+  }, [searchParams, id]);
+  return (
+    <Carousel className="object-contain !h-[400px]">
+      {data.map((it) => (
+        <MovieCard movie={it} className="!h-[500px]" />
+      ))}
+    </Carousel>
+  );
+};

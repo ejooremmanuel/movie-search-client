@@ -1,16 +1,17 @@
 import React, { FC } from "react";
 import { MovieResponse } from "../views/types/index.types";
-import { Box } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
 import { Link } from "react-router-dom";
 
 type Props = {
   movie: MovieResponse;
 };
 
-const MovieCard: FC<Props> = ({ movie }) => {
+const MovieCard: FC<Props & BoxProps> = ({ movie, ...props }) => {
   return (
-    <Link to={`${movie.imdbID}`}>
+    <Link to={`/${movie.imdbID}?year=${movie.Year}`}>
       <Box
+        {...props}
         sx={{
           backgroundImage: `url('${movie.Poster}')`,
           backgroundRepeat: "no-repeat",
