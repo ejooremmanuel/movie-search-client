@@ -37,7 +37,7 @@ const ViewSelectedMovie = () => {
         </div>
         <div className="grid-cols-2">
           <div className="text-[20px] w-full text-white">{data?.Title}</div>
-          <div className="text-[14px] w-full text-gray-700">{data?.Plot}</div>
+          <div className="text-[16px] w-full text-white">{data?.Plot}</div>
           <div className="text-[16px] w-full text-white flex  gap-2">
             <div>Starring:</div>
             <div>{data?.Actors}</div>
@@ -45,21 +45,27 @@ const ViewSelectedMovie = () => {
 
           <div className="flex gap-2 items-end w-full">
             <div className="text-white font-bold">Type:</div>
-            <div className="text-[14px] w-full text-gray-700">{data?.Type}</div>
+            <div className="text-[14px] w-full text-white">{data?.Type}</div>
           </div>
           <CardLabel content={data?.Country || ""} title="Country" />
           <CardLabel content={data?.Language || ""} title="Language" />
           <CardLabel content={data?.Awards || ""} title="Awards" />
+          <CardLabel content={data?.Metascore || ""} title="Score" />
 
           <div className="flex gap-2 items-end w-full">
             <div className="text-white font-bold">Date realeased:</div>
-            <div className="text-[14px] w-full text-gray-700">
+            <div className="text-[14px] w-full text-white">
               {data?.Released}
             </div>
           </div>
           <div className="flex gap-2 items-center">
             <div className="text-white font-bold">Rating:</div>
-            <Rating value={Number(data?.imdbRating)} max={10} readOnly />
+            <Rating
+              value={Number(data?.imdbRating)}
+              max={10}
+              readOnly
+              color="primary"
+            />
           </div>
           <CardLabel content={data?.imdbVotes || ""} title="Votes" />
         </div>
@@ -81,7 +87,7 @@ const SimilarMovies = () => {
   useEffect(() => {
     (async () => {
       const res = await axiosInstance.get<SearchResultOfMovieResponse>(
-        `/?q=${searchParams.get("year")}`
+        `/movies/find?q=${searchParams.get("year")}`
       );
       if (res.data.Response === "True") {
         setData(res.data.Search.filter((it) => it.imdbID !== id));

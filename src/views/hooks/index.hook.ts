@@ -18,7 +18,7 @@ export const useGetMovies = (searchOptions?: ISupportedSearchOption) => {
     queryFn: async () => {
       setLoading(true);
       const res = await axiosInstance.get<SearchResultOfMovieResponse>(
-        `movies/find?q=2023`
+        `/movies/find?q=2023`
       );
       setLoading(false);
       return res.data;
@@ -38,7 +38,7 @@ export const useGetMovies = (searchOptions?: ISupportedSearchOption) => {
   ): Promise<void> => {
     setLoading(true);
     const res = await axiosInstance.get<SearchResultOfMovieResponse>(
-      `movies/find?q=${searchOptions?.q}`
+      `/movies/find?q=${searchOptions?.q}`
     );
     if (res.data.Response === "False") {
       setMovies(new SearchResultOfMovieResponse());
@@ -54,7 +54,7 @@ export const useGetMovie = (id: string) => {
     queryKey: ["movies-single", id],
     enabled: !!id,
     queryFn: async () => {
-      const res = await axiosInstance.get<MovieDetails>(`movies/${id}`);
+      const res = await axiosInstance.get<MovieDetails>(`/movies/${id}`);
 
       return res.data;
     },
@@ -66,7 +66,7 @@ export const useGetRecentSearches = () => {
   const { isLoading, data = [] } = useQuery<any>({
     queryKey: ["searches"],
     queryFn: async () => {
-      const res = await axiosInstance.get<any>(`searches`);
+      const res = await axiosInstance.get<any>(`/searches`);
 
       return res.data;
     },

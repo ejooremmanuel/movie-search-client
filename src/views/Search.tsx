@@ -74,6 +74,7 @@ const Search = (props: Props) => {
               onClick={() => setOpen(true)}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Titles, year"
+              className="!text-white"
               sx={{
                 border: "1px solid #fff",
                 color: "#fff",
@@ -81,11 +82,12 @@ const Search = (props: Props) => {
                 backgroundColor: "inherit",
                 fontSize: "20px",
 
-                "& .css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input": {
-                  color: "#fff",
-                  fontSize: "20px",
-                  backgroundColor: "inherit",
-                },
+                "& .css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input, .css-7g5oui":
+                  {
+                    color: "#fff",
+                    fontSize: "20px",
+                    backgroundColor: "inherit",
+                  },
               }}
             />
           </ClickAwayListener>
@@ -111,6 +113,7 @@ const Search = (props: Props) => {
                   className="cursor-pointer text-white text-[16px]"
                   onClick={() => {
                     setUseSearchResult(false);
+                    setQuery(it);
                     search({
                       q: it,
                       page,

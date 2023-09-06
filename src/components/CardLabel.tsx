@@ -11,7 +11,7 @@ const CardLabel = (props: Props) => {
   return (
     <div className="flex gap-2 items-end w-full">
       <div className="text-white font-bold">{title}:</div>
-      <div className="text-[14px] w-full text-gray-700">{content}</div>
+      <div className="text-[14px] w-full text-white">{content}</div>
     </div>
   );
 };
